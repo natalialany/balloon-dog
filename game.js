@@ -20,7 +20,7 @@ var GRID = 50;
 
 		this.player = new Player( { x: 20, y: config.gameSize.y - config.groundHeight } );
 
-		this.obstacle = new Obstacle( config.gameSize, config.groundHeight);
+		this.obstacleManager = new ObstacleManager( config.gameSize, config.groundHeight);
 
 
 		//game loop
@@ -47,7 +47,7 @@ var GRID = 50;
 		ctx.fillRect(0, config.gameSize.y - config.groundHeight, config.gameSize.x, config.groundHeight);
 
 		//boxes
-		this.obstacle.draw(ctx);
+		this.obstacleManager.draw(ctx);
 
 		//player
 		this.player.draw(ctx);
@@ -80,16 +80,16 @@ var GRID = 50;
 		for (var i=0; i<step; i++) {
 			
 			//obstacles
-			this.obstacle.move(-1);
+			this.obstacleManager.move(-1);
 
 			//collisions with boxes
-			var results = this.obstacle.checkCollision(this.player.getCollisionArea());
+			var results = this.obstacleManager.checkCollision(this.player.getCollisionArea());
 			if ( results.x != -1 ) {
-				this.obstacle.move(1);
+				this.obstacleManager.move(1);
 				break;
 			}
 		}
-		this.obstacle.checkObstacleOffScreen();
+		this.obstacleManager.checkObstacleOffScreen();
 
 		for (var i=0; i<config.gravity; i++) {
 			
@@ -97,7 +97,7 @@ var GRID = 50;
 			this.player.gravity(1);
 
 			//collisions with boxes
-			var results = this.obstacle.checkCollision(this.player.getCollisionArea());
+			var results = this.obstacleManager.checkCollision(this.player.getCollisionArea());
 			if ( results.y != -1 ) {
 				this.player.gravity(-1);
 				break;

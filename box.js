@@ -1,10 +1,10 @@
 //Obstacles
 
-Obstacle = function(gameSize, groundHeight) {
-	this.movement = 0;
+ObstacleManager = function(gameSize, groundHeight) {
 	this.gameSize = gameSize;
 
 	this.boxes = [];
+	
 	this.boxes.push(new Box(gameSize, gameSize.x + 50, 8, 0));
 	this.boxes.push(new Box(gameSize, gameSize.x + 100, 8, 0));
 	this.boxes.push(new Box(gameSize, gameSize.x + 150, 8, 0));
@@ -14,31 +14,28 @@ Obstacle = function(gameSize, groundHeight) {
 	this.boxes.push(new Box(gameSize, gameSize.x + 150, 5, 1));
 }
 
-Obstacle.prototype.move = function(step) {
-	this.movement += step;
-
+ObstacleManager.prototype.move = function(step) {
 	for (var i = 0; i < this.boxes.length; i++) {
-		this.boxes[i].update(step);
+		this.boxes[i].move(step);
 	}
 }
-Obstacle.prototype.draw = function(ctx) {
+ObstacleManager.prototype.draw = function(ctx) {
 	for (var i = 0; i < this.boxes.length; i++) {
-		this.boxes[i].draw(ctx, this.movement);
+		this.boxes[i].draw(ctx);
 	}
 }
 
 //Custom methods
 
-Obstacle.prototype.checkObstacleOffScreen = function() {
+ObstacleManager.prototype.checkObstacleOffScreen = function() {
 	if (this.boxes[this.boxes.length-1].pos.x + this.boxes[this.boxes.length-1].size.x < 0 ) {
-		this.movement = 0;
 		for (var i = 0; i < this.boxes.length; i++) {
 			this.boxes[i].resetPosition();
 		}
 	}
 }
 
-Obstacle.prototype.checkCollision = function(player) {
+ObstacleManager.prototype.checkCollision = function(player) {
 	var results = { x: -1, y: -1};
 
 	var player_grid = { from: ( ( player.y - player.sy ) / GRID ), to: ( ( player.y ) / GRID ) };
@@ -124,7 +121,7 @@ Box.prototype.draw = function(ctx) {
 	ctx.fillStyle = color;
 	ctx.fillRect(this.pos.x, this.pos.y, this.size.x, this.size.y);
 }
-Box.prototype.update = function(step) {
+Box.prototype.move = function(step) {
 	this.pos.x += step;
 }
 
