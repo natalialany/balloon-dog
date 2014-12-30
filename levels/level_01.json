@@ -1,0 +1,39 @@
+[
+	{
+		"type": 0,
+		"pos_y": 8,
+		"pos_x": 0
+	},
+	{
+		"type": 0,
+		"pos_y": 8,
+		"pos_x": 1
+	},
+	{
+		"type": 0,
+		"pos_y": 8,
+		"pos_x": 2
+	},
+
+
+	{
+		"type": 1,
+		"pos_y": 6,
+		"pos_x": 3
+	},
+	{
+		"type": 1,
+		"pos_y": 6,
+		"pos_x": 4
+	},
+	{
+		"type": 1,
+		"pos_y": 6,
+		"pos_x": 5
+	},
+	{
+		"type": 1,
+		"pos_y": 6,
+		"pos_x": 6
+	}
+]

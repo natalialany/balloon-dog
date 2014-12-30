@@ -16,22 +16,25 @@ var GRID = 50;
 			gameSize: { x: canvas.width, y: canvas.height },
 		};
 
-		this.keyboarder = new Keyboarder();
+		loadJSON(function(response) {
+	  		// Parse JSON string into object
+			var actual_JSON = JSON.parse(response);
+			var arr = Object.keys(actual_JSON).map(function(k) { return actual_JSON[k] });
 
-		this.player = new Player( { x: 20, y: config.gameSize.y - config.groundHeight } );
+			self.keyboarder = new Keyboarder();
 
-		this.obstacleManager = new ObstacleManager( config.gameSize, config.groundHeight);
+			self.player = new Player( { x: 20, y: config.gameSize.y - config.groundHeight } );
 
+			self.obstacleManager = new ObstacleManager( config.gameSize, config.groundHeight, arr);
 
-		//game loop
-		var tick = function() {
-			self.update(config);
-			self.draw(ctx, config);
-			requestAnimationFrame(tick);
-		};
-		tick();
-
-
+			//game loop
+			var tick = function() {
+				self.update(config);
+				self.draw(ctx, config);
+				requestAnimationFrame(tick);
+			};
+			tick();
+		});
 	};
 
 	Game.prototype.draw = function(ctx, config) {
@@ -65,7 +68,9 @@ var GRID = 50;
 	Game.prototype.update = function(config) {
 
 		var step = 0;
+		var gravity = 1;
 		var keys = this.keyboarder.getKeys();
+		var player_standing = false;
 
 		//player
 		this.player.update(keys);
@@ -98,17 +103,14 @@ var GRID = 50;
 
 			//collisions with boxes
 			var results = this.obstacleManager.checkCollision(this.player.getCollisionArea());
-			if ( results.y != -1 ) {
+			if ( results.y != -1 || this.player.getPos().y > config.gameSize.y - config.groundHeight) {
 				this.player.gravity(-1);
+				player_standing = true;
 				break;
 			}
 		}
 
-		//collisions with ground
-		if (this.player.getPos().y > config.gameSize.y - config.groundHeight) {
-			this.player.setPos_y(config.gameSize.y - config.groundHeight);
-		}
-
+		this.player.setStanding(player_standing);
 	};
 
 	window.onload = function() {
@@ -117,6 +119,7 @@ var GRID = 50;
 
 	var Keyboarder = function() {
 		var keyState = {};
+
 
 		window.onkeydown = function(e) {
 			keyState[e.keyCode] = true;
@@ -134,3 +137,18 @@ var GRID = 50;
 	};
 
 })();
+
+
+ function loadJSON(callback) {   
+
+    var xobj = new XMLHttpRequest();
+    xobj.overrideMimeType("application/json");
+	xobj.open('GET', 'levels/level_01.json', true); // Replace 'my_data' with the path to your file
+	xobj.onreadystatechange = function () {
+        if (xobj.readyState == 4 && xobj.status == "200") {
+        	// Required use of an anonymous callback as .open will NOT return a value but simply returns undefined in asynchronous mode
+            callback(xobj.responseText);
+        }
+    };
+    xobj.send(null);  
+ }

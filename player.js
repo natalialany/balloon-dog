@@ -14,7 +14,7 @@ var Player = function(startPosition) {
 
   	this.config = {
   		jump: {
-  			y: 80,
+  			y: 120,
   			x: 30
   		}
   	};
@@ -24,6 +24,9 @@ var Player = function(startPosition) {
 
   	this.jump_counter = 0;
   	this.last_pos_y = 0;
+
+  	this.jump_key_released = true;
+  	this.standing = false;
 
 };
 
@@ -36,8 +39,12 @@ Player.prototype.update = function(keys) {
 
 		case this.states.DEFAULT:
 
-			if (keys[KEYS.SPACE]) {
+			if (keys[KEYS.SPACE] && this.standing && this.jump_key_released) {
 				this.jump();
+				this.jump_key_released = false;
+			}
+			if (!keys[KEYS.SPACE]) {
+				this.jump_key_released = true;
 			}
 
 		break;
@@ -64,9 +71,6 @@ Player.prototype.jump = function() {
 Player.prototype.getPos = function() {
 	return { x: this.pos.x, y: this.pos.y };
 }
-Player.prototype.setPos_y = function(y) {
-	this.pos.y = y;
-}
 Player.prototype.getCollisionArea = function() {
 	return { x: this.pos.x, y: this.pos.y, sx: 82, sy: this.size.y };
 }
@@ -75,4 +79,7 @@ Player.prototype.gravity = function(value) {
 }
 Player.prototype.getGrid = function(grid) {
 	return { y: Math.floor(this.pos.y/grid) };
+}
+Player.prototype.setStanding = function(value) {
+	this.standing = value;
 }

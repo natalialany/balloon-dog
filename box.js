@@ -1,17 +1,17 @@
 //Obstacles
 
-ObstacleManager = function(gameSize, groundHeight) {
+ObstacleManager = function(gameSize, groundHeight, arr) {
+
+	var self = this;
+	var add = gameSize.x / 2;
+
 	this.gameSize = gameSize;
 
 	this.boxes = [];
-	
-	this.boxes.push(new Box(gameSize, gameSize.x + 50, 8, 0));
-	this.boxes.push(new Box(gameSize, gameSize.x + 100, 8, 0));
-	this.boxes.push(new Box(gameSize, gameSize.x + 150, 8, 0));
-
-	this.boxes.push(new Box(gameSize, gameSize.x + 50, 5, 1));
-	this.boxes.push(new Box(gameSize, gameSize.x + 100, 5, 1));
-	this.boxes.push(new Box(gameSize, gameSize.x + 150, 5, 1));
+	for (var i=0; i<arr.length; i++) {
+		var box = arr[i];
+		this.boxes.push(new Box(add + (box.pos_x * GRID), box.pos_y, box.type));
+	}
 }
 
 ObstacleManager.prototype.move = function(step) {
@@ -30,7 +30,7 @@ ObstacleManager.prototype.draw = function(ctx) {
 ObstacleManager.prototype.checkObstacleOffScreen = function() {
 	if (this.boxes[this.boxes.length-1].pos.x + this.boxes[this.boxes.length-1].size.x < 0 ) {
 		for (var i = 0; i < this.boxes.length; i++) {
-			this.boxes[i].resetPosition();
+			// delete this.boxes[i];
 		}
 	}
 }
@@ -101,8 +101,7 @@ ObstacleManager.prototype.checkCollision = function(player) {
 
 //Boxes
 
-Box = function(gameSize, offset, grid_from, type) {
-	this.gameSize = gameSize;
+Box = function(offset, grid_from, type) {
 	this.size = {x: 50, y: 50};
 	this.grid = { from: grid_from, to: grid_from + 1 };
 	this.pos = { x: offset, y: this.grid.from * GRID };
@@ -134,8 +133,4 @@ Box.prototype.getGrid = function() {
 }
 Box.prototype.getType = function() {
 	return this.type;
-}
-
-Box.prototype.resetPosition = function() {
-	this.pos.x += this.gameSize.x * 1.2;
 }
