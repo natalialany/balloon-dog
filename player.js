@@ -9,7 +9,7 @@ var Player = function(startPosition) {
 	  self.size = { x: self.img.width, y: self.img.height };
 	};
   	
-  	this.pos = { x: startPosition.x - (this.size.x / 2), y: startPosition.y };
+  	this.pos = startPosition;
 
   	this.config = {
   		jump: {
@@ -33,7 +33,7 @@ var Player = function(startPosition) {
 
 Player.prototype.draw = function(ctx) {
 	this.img.style.top = this.pos.y - this.size.y + 'px';
-	this.img.style.left = this.pos.x, + 'px';
+	this.img.style.left = this.pos.x + 'px';
 }
 Player.prototype.update = function(keys) {
 
