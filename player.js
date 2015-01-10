@@ -2,8 +2,7 @@ var Player = function(startPosition) {
 
 	var self = this;
 
-	this.img = new Image();
-  	this.img.src = 'character.png';
+  	this.img = document.getElementById('dog');
 
   	this.size = { x: this.img.width, y: this.img.height };
   	this.img.onload = function() {
@@ -33,7 +32,8 @@ var Player = function(startPosition) {
 };
 
 Player.prototype.draw = function(ctx) {
-	ctx.drawImage( this.img, this.pos.x, this.pos.y - this.size.y );
+	this.img.style.top = this.pos.y - this.size.y + 'px';
+	this.img.style.left = this.pos.x, + 'px';
 }
 Player.prototype.update = function(keys) {
 
