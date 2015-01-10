@@ -23,7 +23,7 @@ var GRID = 50;
 
 			self.keyboarder = new Keyboarder();
 
-			self.player = new Player( { x: 20, y: config.gameSize.y - config.groundHeight } );
+			self.player = new Player( { x: config.gameSize.x / 2, y: config.gameSize.y - config.groundHeight } );
 
 			self.obstacleManager = new ObstacleManager( config.gameSize, config.groundHeight, arr);
 
@@ -70,7 +70,7 @@ var GRID = 50;
 		var step = 0;
 		var gravity = 1;
 		var keys = this.keyboarder.getKeys();
-		var player_standing = false;
+		var standing = false;
 
 		//player
 		this.player.update(keys);
@@ -79,23 +79,25 @@ var GRID = 50;
 		//step
 		if (keys[KEYS.RIGHT]) {
 			step = config.step;
+		} else if (keys[KEYS.LEFT]) {
+			step = -config.step;
 		}
 
-		//obstacles
-		for (var i=0; i<step; i++) {
-			
-			//obstacles
-			this.obstacleManager.move(-1);
+		//AX X
+		for (var i=0; i<Math.abs(step); i++) {
 
-			//collisions with boxes
-			var results = this.obstacleManager.checkCollision(this.player.getCollisionArea());
-			if ( results.x != -1 ) {
-				this.obstacleManager.move(1);
+			var direction = - step / Math.abs(step);
+			
+			this.obstacleManager.move(direction);
+
+			var isCollisionX = this.obstacleManager.isCollisionX(this.player.getCollisionArea());
+			if ( isCollisionX ) {
+				this.obstacleManager.move(-direction);
 				break;
 			}
 		}
-		this.obstacleManager.checkObstacleOffScreen();
 
+		//AX Y
 		for (var i=0; i<config.gravity; i++) {
 			
 			//obstacles
@@ -105,12 +107,17 @@ var GRID = 50;
 			var results = this.obstacleManager.checkCollision(this.player.getCollisionArea());
 			if ( results.y != -1 || this.player.getPos().y > config.gameSize.y - config.groundHeight) {
 				this.player.gravity(-1);
-				player_standing = true;
+				this.standing = true;
 				break;
 			}
 		}
 
-		this.player.setStanding(player_standing);
+
+		//Player status
+		this.player.setStatus({
+			standing: this.standing,
+			direction: (step>0) ? 1 : -1
+		});
 	};
 
 	window.onload = function() {

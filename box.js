@@ -2,10 +2,7 @@
 
 ObstacleManager = function(gameSize, groundHeight, arr) {
 
-	var self = this;
-	var add = gameSize.x / 2;
-
-	this.gameSize = gameSize;
+	var add = gameSize.x - GRID;
 
 	this.boxes = [];
 	for (var i=0; i<arr.length; i++) {
@@ -27,14 +24,6 @@ ObstacleManager.prototype.draw = function(ctx) {
 
 //Custom methods
 
-ObstacleManager.prototype.checkObstacleOffScreen = function() {
-	if (this.boxes[this.boxes.length-1].pos.x + this.boxes[this.boxes.length-1].size.x < 0 ) {
-		for (var i = 0; i < this.boxes.length; i++) {
-			// delete this.boxes[i];
-		}
-	}
-}
-
 ObstacleManager.prototype.checkCollision = function(player) {
 	var results = { x: -1, y: -1};
 
@@ -48,19 +37,6 @@ ObstacleManager.prototype.checkCollision = function(player) {
 
 		// console.log('player ' + player_grid.from + ' - ', player_grid.to + ' box ' + box_grid.from + ' - ', box_grid.to);
 
-		if (type==0) {
-
-			// X left
-			if ( player.x + player.sx > box.x ) {
-
-				//X right
-				if ( player.x <= box.x + this.boxes[i].size.x ) {
-					//Y top & bottom
-					if (player_grid.to > box_grid.from && player_grid.from < box_grid.to) {
-						results.x = box.x;
-					}
-				}
-			}
 
 			// X left
 			if ( player.x + player.sx > box.x ) {
@@ -74,28 +50,30 @@ ObstacleManager.prototype.checkCollision = function(player) {
 					}
 				}
 			}
-
-		} else if (type==1) {
-
-			// X left
-			if ( player.x + player.sx > box.x ) {
-				
-				//X right
-				if ( player.x <= box.x + this.boxes[i].size.x ) {
-					// Y
-					// if (player_grid.to > box_grid.from && player_grid.from < box_grid.to && player.y >= results.y) {
-					if (player_grid.to === box_grid.from && player.y >= results.y) {
-						results.y = box_grid.from * GRID;
-					}
-				}
-			}
-
-		}
-
 
 	}
 
 	return results;
+}
+
+ObstacleManager.prototype.isCollisionX = function(player) {
+
+	var player_grid = { from: ( ( player.y - player.sy ) / GRID ), to: ( ( player.y ) / GRID ) };
+
+	for (var i = 0; i < this.boxes.length; i++) {
+
+		var b = this.boxes[i].getCollisionArea();
+
+		// X left & X right
+		if ( player.x + player.sx > b.x && player.x <= b.dx) {
+
+			//Y top & bottom
+			if ( (player_grid.to > b.y) && (player_grid.from < b.dy) && (b.dy !== b.y) ) {
+				return true;
+			}
+		}
+	}
+	return false;
 }
 
 
@@ -133,4 +111,12 @@ Box.prototype.getGrid = function() {
 }
 Box.prototype.getType = function() {
 	return this.type;
+}
+Box.prototype.getCollisionArea = function() {
+	var area = { x: this.pos.x, y: this.grid.from, dx: this.pos.x + this.size.x, dy: this.grid.to };
+	switch (this.type) {
+		case 0: break;
+		case 1: area.dy = area.y; break;
+	}
+	return area;
 }

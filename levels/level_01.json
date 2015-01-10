@@ -35,5 +35,22 @@
 		"type": 1,
 		"pos_y": 6,
 		"pos_x": 6
+	},
+
+
+	{
+		"type": 0,
+		"pos_y": 4,
+		"pos_x": 0
+	},
+	{
+		"type": 0,
+		"pos_y": 4,
+		"pos_x": 1
+	},
+	{
+		"type": 0,
+		"pos_y": 4,
+		"pos_x": 2
 	}
 ]

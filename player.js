@@ -10,7 +10,7 @@ var Player = function(startPosition) {
 	  self.size = { x: self.img.width, y: self.img.height };
 	};
   	
-  	this.pos = startPosition;
+  	this.pos = { x: startPosition.x - (this.size.x / 2), y: startPosition.y };
 
   	this.config = {
   		jump: {
@@ -26,7 +26,9 @@ var Player = function(startPosition) {
   	this.last_pos_y = 0;
 
   	this.jump_key_released = true;
-  	this.standing = false;
+  	this.status = {
+  		standing: false
+  	}
 
 };
 
@@ -39,7 +41,7 @@ Player.prototype.update = function(keys) {
 
 		case this.states.DEFAULT:
 
-			if (keys[KEYS.SPACE] && this.standing && this.jump_key_released) {
+			if (keys[KEYS.SPACE] && this.status.standing && this.jump_key_released) {
 				this.jump();
 				this.jump_key_released = false;
 			}
@@ -62,6 +64,7 @@ Player.prototype.update = function(keys) {
 		break;
 	}
 }
+
 //Custom methods
 Player.prototype.jump = function() {
 	this.state = this.states.JUMP;
@@ -80,6 +83,6 @@ Player.prototype.gravity = function(value) {
 Player.prototype.getGrid = function(grid) {
 	return { y: Math.floor(this.pos.y/grid) };
 }
-Player.prototype.setStanding = function(value) {
-	this.standing = value;
+Player.prototype.setStatus = function(value) {
+	this.status = value;
 }
